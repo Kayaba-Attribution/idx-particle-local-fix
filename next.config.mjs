@@ -11,6 +11,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Add trailing slashes to ensure consistent routing
+  trailingSlash: true,
+  // Ensure we handle the routes properly
+  skipTrailingSlashRedirect: false,
   images: {
     domains: ["app.indexcoop.com"],
   },

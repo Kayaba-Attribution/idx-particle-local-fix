@@ -90,10 +90,10 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                   : "text-[#627171]";
 
               return (
-                <a
+                <Link
                   key={index}
                   className="hover:bg-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex"
-                  href={`/products/${product.address}`}
+                  href={`/products/${product.address.toLowerCase()}`}
                 >
                   <div className="text-[#627171] text-sm font-medium min-w-[410px] flex items-center pl-6">
                     <div className="mr-2 overflow-hidden rounded-full">
@@ -135,7 +135,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                   <div className="text-[#627171] text-sm font-medium min-w-[120px] px-2 pr-8 text-right">
                     {product.tvl}
                   </div>
-                </a>
+                </Link>
               );
             })}
           </div>
