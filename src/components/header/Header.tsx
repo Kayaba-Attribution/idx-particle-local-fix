@@ -48,6 +48,9 @@ const Header: React.FC = () => {
         <Link href="/faucetOp" className={linkClass("/faucetOp")}>
           FaucetOp
         </Link>
+        <Link href="/random" className={linkClass("/random")}>
+          Random
+        </Link>
       </div>
 
       {/* Right Section */}
