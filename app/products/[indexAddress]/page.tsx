@@ -51,6 +51,43 @@ type Distribution = {
   portion: string;
 };
 
+// Safe Components with Validation
+const SafeIndexChart: React.FC<{ data: DataPoint[] }> = ({ data }) => {
+  return (
+    <>
+      {data && data.length > 0 ? (
+        <IndexChart data={data} />
+      ) : (
+        <p className="text-center text-gray-500">Loading chart data...</p>
+      )}
+    </>
+  );
+};
+
+const SafeIndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
+  return (
+    <>
+      {tokenData ? (
+        <IndexDetails tokenData={tokenData} />
+      ) : (
+        <p className="text-center text-gray-500">Loading token details...</p>
+      )}
+    </>
+  );
+};
+
+const SafeIndexDistribution: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
+  return (
+    <>
+      {tokenData ? (
+        <IndexDistribution tokenData={tokenData} />
+      ) : (
+        <p className="text-center text-gray-500">Loading distribution data...</p>
+      )}
+    </>
+  );
+};
+
 // ProductInfo Component
 function ProductInfo() {
   const { chain, address, isConnected } = useAccount();
@@ -69,6 +106,7 @@ function ProductInfo() {
     const fetchChartData = async () => {
       try {
         const response = await fetch("/src/data/advanced-info.json");
+        if (!response.ok) throw new Error('Failed to fetch chart data');
         const json = await response.json();
         setPriceData(json["price-data"]);
         setChartData(json["price-data"]["24h-ts"]);
@@ -84,9 +122,7 @@ function ProductInfo() {
         const response = await fetch(
           `http://ec2-54-174-164-111.compute-1.amazonaws.com/api/token/${indexAddress}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch token data");
-        }
+        if (!response.ok) throw new Error('Failed to fetch token data');
         const json = await response.json();
         setTokenData(json);
       } catch (error) {
@@ -99,14 +135,13 @@ function ProductInfo() {
   }, [indexAddress]);
 
   React.useEffect(() => {
-    if (priceData) {
+    if (priceData && priceData[selectedRange]) {
       setChartData(priceData[selectedRange]);
     }
   }, [selectedRange, priceData]);
 
-  // Add null check for the entire component
   if (!indexAddress) {
-    return <div>Loading...</div>;
+    return <div className="text-center p-4">Loading...</div>;
   }
 
   return (
@@ -119,18 +154,20 @@ function ProductInfo() {
           Gain deep insights into index metrics and trends to leverage smarter,
           data-driven decisions.
         </h3>
-        <Link
-          href={`/products/${indexAddress}/trade`}
-          className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3"
-        >
-          Trade Now
-        </Link>
+        {indexAddress && (
+          <Link
+            href={`/products/${indexAddress}/trade`}
+            className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3"
+          >
+            Trade Now
+          </Link>
+        )}
       </div>
 
       <div className="w-full max-w-6xl mb-8">
         <div className="w-full p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
-            {tokenData ? `${tokenData.symbol} Price` : "Loading..."}
+            {tokenData?.symbol || "Loading..."}
           </h2>
 
           <div className="flex justify-center space-x-2 mb-4">
@@ -149,37 +186,28 @@ function ProductInfo() {
             ))}
           </div>
 
-          {chartData.length > 0 ? (
-            <IndexChart data={chartData} />
-          ) : (
-            <p className="text-center text-gray-500">Loading data...</p>
-          )}
+          <SafeIndexChart data={chartData} />
         </div>
       </div>
 
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8">
-        {tokenData && (
-          <div className="p-6 bg-white rounded-lg shadow-lg">
-            <IndexDetails tokenData={tokenData} />
-          </div>
-        )}
-        {tokenData && (
-          <div className="p-6 bg-white rounded-lg shadow-lg h-auto">
-            <IndexDistribution tokenData={tokenData} />
-          </div>
-        )}
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <SafeIndexDetails tokenData={tokenData!} />
+        </div>
+        <div className="p-6 bg-white rounded-lg shadow-lg h-auto">
+          <SafeIndexDistribution tokenData={tokenData!} />
+        </div>
       </div>
     </div>
   );
-};
+}
 
-// Add a wrapper component that handles the null check
+// Page wrapper component
 export default function Page() {
   const params = useParams();
-  console.log(params);
   
-  if (!params || !params.indexAddress) {
-    return <div>Loading...</div>;
+  if (!params?.indexAddress) {
+    return <div className="text-center p-4">Loading...</div>;
   }
 
   return <ProductInfo />;

@@ -14,14 +14,7 @@ import {
   BasicIssuanceModule,
   StreamingFeeModule,
 } from "@/abis";
-import {
-  Abi,
-  Address,
-  formatUnits,
-  parseEther,
-  parseUnits,
-  encodeFunctionData,
-} from "viem";
+import { Abi, Address, formatUnits, parseEther, parseUnits } from "viem";
 import Link from "next/link";
 
 interface ContractData {
@@ -45,7 +38,35 @@ interface DataItem {
   status: string;
 }
 
-const SetDetails = () => {
+// Safe Distribution Display Component
+const SafeDistributionDisplay: React.FC<{
+  distribution: string[];
+  colors: string[];
+}> = ({ distribution, colors }) => {
+  return (
+    <>
+      {distribution && distribution.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {distribution.map((item, index) => (
+            <span
+              key={index}
+              className="px-3 py-1 text-white rounded-full text-sm font-medium"
+              style={{
+                backgroundColor: colors[index % colors.length],
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500">No distribution data available</p>
+      )}
+    </>
+  );
+};
+
+function SetDetails() {
   const [primaryWallet] = useWallets();
   const { chain, address: userWallet, isConnected } = useAccount();
   const publicClient = usePublicClient();
@@ -73,18 +94,15 @@ const SetDetails = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [streamingFeePercentage, setStreamingFeePercentage] =
-    useState<string>("2"); // this is the fee set by the user in hte fee input
+    useState<string>("2");
   const [streamingFeeIndex, setStreamingFeeIndex] = useState<string | null>(
     null
-  ); // this is the fee obtained directly from the index, using the StreamingFeeModule
+  );
 
-  const MAX_FEE_PERCENTAGE = 10; // 10%
-
+  const MAX_FEE_PERCENTAGE = 10;
   const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
   const basicIssuanceModuleAddress = process.env
     .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as `0x${string}`;
-  const multicallAddress = process.env
-    .NEXT_PUBLIC_MULTICALL_ADDRESS as `0x${string}`;
   const streamingFeeModuleAddress = process.env
     .NEXT_PUBLIC_STREAMING_FEE_MODULE as `0x${string}`;
   const COLORS = [
@@ -450,6 +468,7 @@ const SetDetails = () => {
     }
   };
 
+
   const getDistributionDisplay = () => {
     if (!componentUnits || !tokenDecimals || !tokenNames) return [];
 
@@ -460,6 +479,10 @@ const SetDetails = () => {
       return `${name} - ${quantity.toFixed(0)}`;
     });
   };
+
+  if (!address) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-8">
@@ -507,18 +530,21 @@ const SetDetails = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-200">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {formattedData
+                  {formattedData?.name?.result
                     ? String(formattedData.name.result)
                     : "Loading..."}
                 </h2>
                 <p className="text-gray-600 mt-1">
-                  {formattedData ? String(formattedData.symbol.result) : ""}
+                  {formattedData?.symbol?.result
+                    ? String(formattedData.symbol.result)
+                    : ""}
                 </p>
               </div>
               <div className="mt-2 md:mt-0 text-right">
                 <div className="text-sm text-gray-600">Total Supply</div>
                 <div className="text-lg font-medium">
-                  {formattedData
+                  {formattedData?.totalSupply?.result &&
+                  formattedData?.decimals?.result
                     ? parseFloat(
                         formatUnits(
                           formattedData.totalSupply.result as bigint,
@@ -537,7 +563,7 @@ const SetDetails = () => {
               </div>
               <div className="text-sm text-gray-600">Index Manager</div>
               <div className="font-mono text-sm bg-gray-50 p-3 rounded-lg break-all">
-                {formattedData ? formattedData.manager.result : "N/A"}
+                {formattedData?.manager?.result || "N/A"}
               </div>
               <div className="text-sm text-gray-600">Index Streaming Fee</div>
               <div
@@ -554,26 +580,17 @@ const SetDetails = () => {
               <div className="text-sm text-gray-600">
                 Underlying Assets Required
               </div>
-              <div className="flex flex-wrap gap-2">
-                {getDistributionDisplay().map((distribution, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 text-white rounded-full text-sm font-medium"
-                    style={{
-                      backgroundColor: COLORS[index % COLORS.length],
-                    }}
-                  >
-                    {distribution}
-                  </span>
-                ))}
-              </div>
+              <SafeDistributionDisplay
+                distribution={getDistributionDisplay()}
+                colors={COLORS}
+              />
             </div>
           </div>
         </div>
 
         {/* Action Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          {formattedData && formattedData.isInitialized.result === false ? (
+          {formattedData?.isInitialized?.result === false ? (
             <div className="text-center">
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Module Initialization Required
@@ -585,9 +602,19 @@ const SetDetails = () => {
                 <input
                   type="number"
                   value={streamingFeePercentage}
-                  onChange={handleStreamingFeeChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numericValue = parseFloat(value);
+                    if (
+                      !isNaN(numericValue) &&
+                      numericValue <= MAX_FEE_PERCENTAGE
+                    ) {
+                      setStreamingFeePercentage(value);
+                    } else if (value === "") {
+                      setStreamingFeePercentage("");
+                    }
+                  }}
                   onBlur={() => {
-                    // Format to two decimals on blur if the input is not empty
                     if (streamingFeePercentage) {
                       setStreamingFeePercentage(
                         parseFloat(streamingFeePercentage).toFixed(2)
@@ -598,9 +625,8 @@ const SetDetails = () => {
                   max={MAX_FEE_PERCENTAGE}
                   step="0.01"
                   className="w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter fee percentage"
+                  placeholder="Enter fee"
                 />
-
                 <p className="mt-1 text-sm text-gray-500">
                   Annual fee percentage charged on the index
                 </p>
@@ -622,7 +648,11 @@ const SetDetails = () => {
                   <input
                     type="number"
                     value={tokenAmount}
-                    onChange={handleInputChangeAmount}
+                    onChange={(e) =>
+                      setTokenAmount(
+                        e.target.value === "" ? 0 : parseFloat(e.target.value)
+                      )
+                    }
                     className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
                     placeholder="Enter amount"
                   />
@@ -668,13 +698,14 @@ const SetDetails = () => {
       </div>
     </div>
   );
-};
+}
 
+// Page wrapper component
 export default function TradePage() {
   const params = useParams();
-  
-  if (!params || !params.indexAddress) {
-    return <div>Loading...</div>;
+
+  if (!params?.indexAddress) {
+    return <div className="text-center p-4">Loading...</div>;
   }
 
   return <SetDetails />;
