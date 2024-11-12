@@ -1,3 +1,4 @@
+// app/products/[indexAddress]/page.tsx
 "use client";
 
 import React from "react";
@@ -103,6 +104,7 @@ function ProductInfo() {
     }
   }, [selectedRange, priceData]);
 
+  // Add null check for the entire component
   if (!indexAddress) {
     return <div>Loading...</div>;
   }
@@ -169,12 +171,15 @@ function ProductInfo() {
       </div>
     </div>
   );
-}
+};
 
-// Page Component
 export default function Page() {
   const params = useParams();
   console.log("Page params:", params); // For debugging
+  
+  if (!params || !params.indexAddress) {
+    return <div>Loading...</div>;
+  }
 
   return <ProductInfo />;
 }

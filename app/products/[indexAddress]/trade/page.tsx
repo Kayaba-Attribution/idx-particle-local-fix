@@ -50,6 +50,7 @@ const SetDetails = () => {
   const { chain, address: userWallet, isConnected } = useAccount();
   const publicClient = usePublicClient();
   const params = useParams();
+
   const address = params.indexAddress as `0x${string}`;
 
   const [tokenAmount, setTokenAmount] = useState<number>(1);
@@ -669,4 +670,12 @@ const SetDetails = () => {
   );
 };
 
-export default SetDetails;
+export default function TradePage() {
+  const params = useParams();
+  
+  if (!params || !params.indexAddress) {
+    return <div>Loading...</div>;
+  }
+
+  return <SetDetails />;
+}
