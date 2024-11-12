@@ -7,7 +7,7 @@ import {
   useAccount,
   usePublicClient,
 } from "@particle-network/connectkit";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import {
   Erc20,
   SetToken,
@@ -23,6 +23,13 @@ import {
   encodeFunctionData,
 } from "viem";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
+
+// This is important - it tells Next.js this is a dynamic route that should be handled at runtime
+export async function generateStaticParams() {
+  return []; // Empty array means all paths will be handled at runtime
+}
 
 interface ContractData {
   abi: any;
@@ -104,6 +111,13 @@ const SetDetails = () => {
     5: "manager",
     6: "isInitialized",
   };
+
+  if (!params.indexAddress) {
+    notFound();
+  }
+
+  console.log("Rendering page with params:", params);
+  console.log("Rendering page with address:", address);
 
   // Fetch main index data
   useEffect(() => {

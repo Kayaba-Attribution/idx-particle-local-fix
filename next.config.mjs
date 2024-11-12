@@ -12,7 +12,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   // Add trailing slashes to ensure consistent routing
-  trailingSlash: true,
+  trailingSlash: false,
   // Ensure we handle the routes properly
   skipTrailingSlashRedirect: false,
   images: {
