@@ -64,41 +64,49 @@ export default function Component() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {showConfetti && <Confetti />}
-      <div className="flex flex-col items-center mb-12 space-y-8 md:space-y-10 max-w-screen-xl w-full mx-auto">
-        <h2 className="text-[#364647] max-w-3xl text-center text-3xl font-bold md:text-4xl lg:text-5xl lg:leading-tight">
-          Test Tokens Available. <br /> Start Trading Now.
-        </h2>
-        <h3 className="text-[#859393] max-w-lg text-center text-sm font-medium md:text-base">
-          Use this tool to get tokens for testing the platform. Mint multiple
-          tokens at once to explore all features.
-        </h3>
-        <button
-          onClick={handleMint}
-          disabled={loading}
-          className={`${
-            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-400"
-          } text-white rounded-lg px-11 py-3 transition-colors`}
-        >
-          {loading ? "Minting Tokens..." : "Mint Tokens"}
-        </button>
-      </div>
-
-      {mintedTokens.length > 0 && (
-        <div className="max-w-lg mx-auto mt-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 space-y-2">
-            {mintedTokens.map((message, index) => (
-              <p
-                key={index}
-                className="text-[#364647] text-sm md:text-base text-center"
-              >
-                {message}
-              </p>
-            ))}
-          </div>
+    <>
+      <a
+        className="hover:bg-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex"
+        href={`/faucet/swap`}
+      >
+        Button
+      </a>
+      <div className="container mx-auto px-4 py-8">
+        {showConfetti && <Confetti />}
+        <div className="flex flex-col items-center mb-12 space-y-8 md:space-y-10 max-w-screen-xl w-full mx-auto">
+          <h2 className="text-[#364647] max-w-3xl text-center text-3xl font-bold md:text-4xl lg:text-5xl lg:leading-tight">
+            Test Tokens Available. <br /> Start Trading Now.
+          </h2>
+          <h3 className="text-[#859393] max-w-lg text-center text-sm font-medium md:text-base">
+            Use this tool to get tokens for testing the platform. Mint multiple
+            tokens at once to explore all features.
+          </h3>
+          <button
+            onClick={handleMint}
+            disabled={loading}
+            className={`${
+              loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-400"
+            } text-white rounded-lg px-11 py-3 transition-colors`}
+          >
+            {loading ? "Minting Tokens..." : "Mint Tokens"}
+          </button>
         </div>
-      )}
-    </div>
+
+        {mintedTokens.length > 0 && (
+          <div className="max-w-lg mx-auto mt-8">
+            <div className="bg-white rounded-xl shadow-sm p-6 space-y-2">
+              {mintedTokens.map((message, index) => (
+                <p
+                  key={index}
+                  className="text-[#364647] text-sm md:text-base text-center"
+                >
+                  {message}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
