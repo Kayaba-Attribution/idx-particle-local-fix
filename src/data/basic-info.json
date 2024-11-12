@@ -1,0 +1,30 @@
+{
+  "name": "UNI-LINK Index",
+  "symbol": "ULI",
+  "address": "0x2F2695BB264Cea0c01476ea09bD3e444ac00e92B",
+  "deploy-timestamp": "1731284891",
+  "price-data": {
+    "price": "99.2",
+    "24h-delta": "3.58",
+    "7d-delta": "33.70",
+    "1m-delta": "27.28",
+    "3m-delta": "40.35",
+    "6m-delta": "13.87"
+  },
+  "token-data": {
+    "supply": "2",
+    "mcap": "198.4",
+    "distribution": [
+      {
+        "symbol": "UNI",
+        "address": "0x8951299547375f45A0B1D139Dc852bc5Df6612c5",
+        "portion": "28.76"
+      },
+      {
+        "symbol": "LINK",
+        "address": "0x647cb2087d65C590cEDCbdA996292BCC2b50955D",
+        "portion": "71.24"
+      }
+    ]
+  }
+}
