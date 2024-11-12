@@ -51,6 +51,9 @@ const Header: React.FC = () => {
         <Link href="/random" className={linkClass("/random")}>
           Random
         </Link>
+        <Link href="/randomOp" className={linkClass("/randomOp")}>
+          Randomop
+        </Link>
       </div>
 
       {/* Right Section */}

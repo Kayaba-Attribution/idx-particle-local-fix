@@ -10,8 +10,7 @@ export default function Home() {
 
   const handleSubmit = () => {
     if (input.trim()) {
-      // Force a full page reload for reliable navigation in production
-      window.location.href = `/random/${input}`;
+      router.replace(`/random/${input}`);
     }
   };
 
