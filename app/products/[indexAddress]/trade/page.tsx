@@ -1,4 +1,4 @@
-// app/indexes/[indexAddress]/page.tsx
+// app/products/[indexAddress]/trade/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";

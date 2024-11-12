@@ -1,6 +1,7 @@
-"use client"; // Marks this component as a Client Component
+"use client";
 
-import tokenLogos from "@/data/tokenLogos.json"; // Assuming you still need this for logos
+import { useCallback } from "react";
+import tokenLogos from "@/data/tokenLogos.json";
 import Link from "next/link";
 
 const getRandomLogo = () => {
@@ -17,7 +18,15 @@ interface Product {
   tvl: string;
 }
 
-const ProductTable = ({ products }: { products: Product[] }) => {
+interface ProductTableProps {
+  products: Product[];
+}
+
+export default function ProductTable({ products }: ProductTableProps) {
+  const handleProductClick = useCallback((address: string) => {
+    window.location.href = `/products/${address.toLowerCase()}`;
+  }, []);
+
   return (
     <div className="px-2 pt-16 sm:px-4 md:px-8 md:pt-20 lg:px-12">
       <div className="flex flex-col items-center space-y-10 md:space-y-12">
@@ -31,7 +40,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
         </h3>
 
         <Link
-          href={`/factory`}
+          href="/factory"
           className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3"
         >
           Create Index
@@ -43,8 +52,8 @@ const ProductTable = ({ products }: { products: Product[] }) => {
 
         {/* Desktop Table */}
         <div className="bg-white border-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm hidden md:flex flex-col">
+          {/* Table Headers */}
           <div className="hidden justify-between py-6 md:flex">
-            {/* Table Headers */}
             <div className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium group">
               Index
               <svg
@@ -90,10 +99,10 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                   : "text-[#627171]";
 
               return (
-                <Link
+                <div
                   key={index}
+                  onClick={() => handleProductClick(product.address)}
                   className="hover:bg-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex"
-                  href={`/products/${product.address.toLowerCase()}`}
                 >
                   <div className="text-[#627171] text-sm font-medium min-w-[410px] flex items-center pl-6">
                     <div className="mr-2 overflow-hidden rounded-full">
@@ -135,7 +144,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                   <div className="text-[#627171] text-sm font-medium min-w-[120px] px-2 pr-8 text-right">
                     {product.tvl}
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
@@ -208,12 +217,12 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                     </div>
                   </div>
                 </div>
-                <a
+                <button
+                  onClick={() => handleProductClick(product.address)}
                   className="text-[#3B82F6] ring-[#3B82F6] mt-4 w-full rounded-md bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm ring-1 ring-inset hover:bg-gray-50"
-                  href={`/products/${product.symbol.toLowerCase()}`}
                 >
                   Trade {product.symbol}
-                </a>
+                </button>
               </div>
             );
           })}
@@ -221,6 +230,4 @@ const ProductTable = ({ products }: { products: Product[] }) => {
       </div>
     </div>
   );
-};
-
-export default ProductTable;
+}
