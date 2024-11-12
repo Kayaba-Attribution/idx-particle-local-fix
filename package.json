@@ -13,7 +13,7 @@
     "@ant-design/icons": "^5.5.1",
     "@lifi/sdk": "^3.4.1",
     "@next/bundle-analyzer": "^15.0.2",
-    "@particle-network/connectkit": "^2.0.9",
+    "@particle-network/connectkit": "^2.0.11",
     "antd": "^5.21.6",
     "klaster-sdk": "0.5.11",
     "lightweight-charts": "^4.2.1",

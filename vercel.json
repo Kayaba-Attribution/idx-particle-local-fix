@@ -1,3 +1,15 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "version": 2,
+  "buildCommand": "next build",
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/products/[^/]+$",
+      "dest": "/products/[indexAddress]"
+    },
+    {
+      "src": "/products/[^/]+/trade$",
+      "dest": "/products/[indexAddress]/trade"
+    }
+  ]
 }

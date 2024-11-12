@@ -1,6 +1,6 @@
 "use client";
 
-import Profile from "@/components/profile/Profile";
+import Profile from "../../src/components/profile/Profile";
 
 const page = () => {
   return (

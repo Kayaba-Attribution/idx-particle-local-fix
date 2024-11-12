@@ -7,7 +7,7 @@ import tokenList from "@/data/tokenListBaseSep.json";
 import { Abi, parseUnits, Address, encodeFunctionData } from "viem";
 import { useAccount, useWallets } from "@particle-network/connectkit";
 import { SetTokenCreator } from "@/abis";
-import { acrossBridgePlugin } from "@/utils/acrossBridge";
+import { acrossBridgePlugin } from "../../../src/utils/acrossBridge";
 import {
   initKlaster,
   klasterNodeHost,

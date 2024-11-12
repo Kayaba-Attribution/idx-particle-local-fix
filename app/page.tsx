@@ -1,6 +1,6 @@
 // pages/index.js
 
-import ProductTable from "@/components/dashboard/ProductTable";
+import ProductTable from "../src/components/dashboard/ProductTable";
 
 const Page = async () => {
   const response = await fetch(

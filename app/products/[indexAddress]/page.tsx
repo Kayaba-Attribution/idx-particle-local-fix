@@ -2,9 +2,9 @@
 "use client";
 
 import React from "react";
-import IndexChart from "@/components/analytics/IndexChart";
-import IndexDetails from "@/components/analytics/IndexDetails";
-import IndexDistribution from "@/components/analytics/IndexDistribution";
+import IndexChart from "../../../src/components/analytics/IndexChart";
+import IndexDetails from "../../../src/components/analytics/IndexDetails";
+import IndexDistribution from "../../../src/components/analytics/IndexDistribution";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {

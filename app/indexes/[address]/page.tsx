@@ -1,6 +1,6 @@
 // app/indexes/[address]/page.tsx
 
-import IndexesManager from "@/components/indexes/IndexesManager";
+import IndexesManager from "../../../src/components/indexes/IndexesManager";
 import React from "react";
 
 export const dynamic = "force-dynamic";

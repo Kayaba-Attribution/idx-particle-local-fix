@@ -15,7 +15,7 @@ import {
   getTokenAddressForChainId,
 } from "klaster-sdk";
 
-import { acrossBridgePlugin } from "@/utils/acrossBridge";
+import { acrossBridgePlugin } from "../../src/utils/acrossBridge";
 
 import { useState } from "react";
 import Confetti from "react-confetti";
