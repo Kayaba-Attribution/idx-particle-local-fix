@@ -1,21 +1,18 @@
-//app/products/[indexAddress]/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import IndexChart from "@/components/analytics/IndexChart";
 import IndexDetails from "@/components/analytics/IndexDetails";
 import IndexDistribution from "@/components/analytics/IndexDistribution";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-
 import {
   usePublicClient,
   useWallets,
   useAccount,
 } from "@particle-network/connectkit";
-import { Erc20, SetToken, BasicIssuanceModule } from "@/abis";
-import { parseUnits, Abi, Address } from "viem";
 
+// Types
 type DataPoint = {
   timestamp: string;
   price: string;
@@ -53,35 +50,35 @@ type Distribution = {
   portion: string;
 };
 
-const ProductInfo: React.FC = () => {
+// ProductInfo Component
+function ProductInfo() {
   const { chain, address, isConnected } = useAccount();
   const [primaryWallet] = useWallets();
   const { indexAddress } = useParams<{ indexAddress: `0x${string}` }>();
-  const [chartData, setChartData] = useState<DataPoint[]>([]);
-  const [priceData, setPriceData] = useState<PriceData | null>(null);
-  const [tokenData, setTokenData] = useState<TokenData | null>(null);
-  const [selectedRange, setSelectedRange] = useState<
+  const [chartData, setChartData] = React.useState<DataPoint[]>([]);
+  const [priceData, setPriceData] = React.useState<PriceData | null>(null);
+  const [tokenData, setTokenData] = React.useState<TokenData | null>(null);
+  const [selectedRange, setSelectedRange] = React.useState<
     "24h-ts" | "7d-ts" | "1m-ts" | "3m-ts" | "6m-ts"
   >("24h-ts");
 
-  // Available time ranges for easy scalability
   const timeRanges = ["24h-ts", "7d-ts", "1m-ts", "3m-ts", "6m-ts"] as const;
 
-  useEffect(() => {
-    // Fetch mock chart data
+  React.useEffect(() => {
     const fetchChartData = async () => {
       try {
         const response = await fetch("/src/data/advanced-info.json");
         const json = await response.json();
         setPriceData(json["price-data"]);
-        setChartData(json["price-data"]["24h-ts"]); // Default to 24h data
+        setChartData(json["price-data"]["24h-ts"]);
       } catch (error) {
         console.error("Failed to load chart data:", error);
       }
     };
 
-    // Fetch token data from API using indexAddress
     const fetchTokenData = async () => {
+      if (!indexAddress) return;
+
       try {
         const response = await fetch(
           `http://ec2-54-174-164-111.compute-1.amazonaws.com/api/token/${indexAddress}`
@@ -90,7 +87,7 @@ const ProductInfo: React.FC = () => {
           throw new Error("Failed to fetch token data");
         }
         const json = await response.json();
-        setTokenData(json); // Set the token data for IndexDetails
+        setTokenData(json);
       } catch (error) {
         console.error("Failed to load token data:", error);
       }
@@ -100,12 +97,15 @@ const ProductInfo: React.FC = () => {
     fetchTokenData();
   }, [indexAddress]);
 
-  // Update chart data when selectedRange changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (priceData) {
       setChartData(priceData[selectedRange]);
     }
   }, [selectedRange, priceData]);
+
+  if (!indexAddress) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-16 px-2 sm:px-4 md:px-6 lg:px-8">
@@ -125,7 +125,6 @@ const ProductInfo: React.FC = () => {
         </Link>
       </div>
 
-      {/* First row: Chart */}
       <div className="w-full max-w-6xl mb-8">
         <div className="w-full p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
@@ -156,7 +155,6 @@ const ProductInfo: React.FC = () => {
         </div>
       </div>
 
-      {/* Second row: Details and Distribution */}
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8">
         {tokenData && (
           <div className="p-6 bg-white rounded-lg shadow-lg">
@@ -171,6 +169,12 @@ const ProductInfo: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ProductInfo;
+// Page Component
+export default function Page() {
+  const params = useParams();
+  console.log("Page params:", params); // For debugging
+
+  return <ProductInfo />;
+}
