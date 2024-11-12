@@ -1,5 +1,5 @@
 // random/page.tsx
-"use client";
+"use client"; // This tells Next.js to treat this as a Client Component
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ export default function Home() {
 
   const handleSubmit = () => {
     if (input.trim()) {
-      router.push(`/${input}`);
+      router.push(`/random/${input}`);
     }
   };
 
