@@ -11,6 +11,8 @@ export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [mintedTokens, setMintedTokens] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const swap = "0x2F2695BB264Cea0c01476ea09bD3e444ac00e92B";
+  const swapv2 = "abc";
 
   const [primaryWallet] = useWallets(); // Get primary wallet
   const { chain, address, isConnected } = useAccount(); // Get wallet connection state
@@ -65,12 +67,6 @@ export default function Component() {
 
   return (
     <>
-      <a
-        className="hover:bg-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex"
-        href={`/faucet/swap`}
-      >
-        Button
-      </a>
       <div className="container mx-auto px-4 py-8">
         {showConfetti && <Confetti />}
         <div className="flex flex-col items-center mb-12 space-y-8 md:space-y-10 max-w-screen-xl w-full mx-auto">

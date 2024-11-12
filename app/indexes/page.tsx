@@ -169,7 +169,11 @@ const Indexes = () => {
         {isConnected && !loading && !error && managedSets.length > 0 && (
           <div className="space-y-4">
             {managedSets.map((set, index) => (
-              <Link href={`/indexes/${set}`} key={set} className="block group">
+              <Link
+                href={`/indexes/${set.toLowerCase()}`}
+                key={set}
+                className="block group"
+              >
                 <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
                   <div className="p-4 flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">
