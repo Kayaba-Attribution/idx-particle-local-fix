@@ -173,9 +173,9 @@ function ProductInfo() {
   );
 };
 
+// Add a wrapper component that handles the null check
 export default function Page() {
   const params = useParams();
-  console.log("Page params:", params); // For debugging
   
   if (!params || !params.indexAddress) {
     return <div>Loading...</div>;
